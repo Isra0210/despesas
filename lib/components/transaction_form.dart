@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'adaptative_textField.dart';
+import 'adaptative_button.dart';
+import 'adaptative_datePicker.dart';
 
 class TransactionForm extends StatefulWidget {
   final void Function(String, double, DateTime) onSubmit;
@@ -27,26 +29,6 @@ class _TransactionFormState extends State<TransactionForm> {
     widget.onSubmit(title, value, _selectedDate);
   }
 
-  _showDatePicker() {
-    showDatePicker(
-      //Função para mostrar Date picker
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      //clicado em data
-      if (pickedDate == null) {
-        return;
-      }
-
-      setState(() {
-        //Efetuando a troca da data a interface preisa refletir a alteração desse valor
-        _selectedDate = pickedDate;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -67,66 +49,34 @@ class _TransactionFormState extends State<TransactionForm> {
                   height: 80,
                 ),
               ),
-              TextField(
+              AdaptativeTextField(
+                label: 'Título',
                 controller: _titleController, //Pegando o valor dos textField
                 onSubmitted: (_) => _submitFormfinal(),
-                decoration: InputDecoration(
-                  labelText: 'Título:',
-                ),
               ),
-              TextField(
+              AdaptativeTextField(
+                label: 'Valor (R\$)',
                 controller: valueController, //Pegando o valor dos textField
                 keyboardType: TextInputType.numberWithOptions(
                     decimal:
                         true), //chamando o teclado numérico com casas decimais exclusivamente para ios
                 onSubmitted: (_) =>
                     _submitFormfinal(), //_ como parametro: estamos ignorando o parametro que ira ser passado na função
-                decoration: InputDecoration(
-                  labelText: 'Valor (R\$):',
-                ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          _selectedDate == null
-                              ? 'Selecione uma Data:'
-                              : 'Data: ${DateFormat('d/MM/y').format(_selectedDate)}',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.date_range),
-                          onPressed: _showDatePicker,
-                        ),
-                      ],
-                    ),
+                  AdaptativeDatePicker(
+                    selectedDate: _selectedDate,
+                    onDateChanged: (newDate) {
+                      setState(() {
+                        _selectedDate = newDate;
+                      });
+                    },
                   ),
-                  Container(
-                    child: FlatButton(
-                      shape: new RoundedRectangleBorder(
-                        //Colocando border radius no botão
-                        borderRadius: new BorderRadius.circular(20),
-                        side: BorderSide(
-                            color:
-                                Colors.red), //Theme.of(context).primaryColor),
-                      ),
-                      child: Text(
-                        'Adicionar Dispesa',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                      onPressed: _submitFormfinal, //color: Colors.grey[100],
-                    ),
+                  AdaptativeButton(
+                    label: 'Adicionar Despesa',
+                    onPressed: _submitFormfinal,
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
