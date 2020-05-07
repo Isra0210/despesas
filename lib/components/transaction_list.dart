@@ -1,7 +1,7 @@
 import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
+import 'transaction_item.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
@@ -44,50 +44,21 @@ class TransactionList extends StatelessWidget {
             itemBuilder: (ctx, index) {
               //exibe quais elementos são necessario
               final tr = transactions[index];
-              return Card(
-                elevation: 5,
-                margin: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Color.fromRGBO(0, 0, 30, 1),
-                    radius: 30,
-                    child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: FittedBox(
-                        child: Text(
-                          'R\$${tr.value}',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    tr.title,
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  subtitle: Text(
-                    DateFormat('d/MMM/y').format(tr.date),
-                  ),
-                  trailing: MediaQuery.of(context).size.width > 400
-                      ? FlatButton.icon(
-                          onPressed: () => onRemove(tr.id),
-                          icon: Icon(Icons.delete),
-                          label: Text('Excluir'),
-                          textColor: Colors.red,
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => onRemove(tr.id),
-                          color: Colors.red,
-                        ),
-                ),
+              return TransactionItem(
+                key: GlobalObjectKey(tr),
+                tr: tr,
+                onRemove: onRemove,
               );
             },
           );
+    //     ListView(
+    //         children: transactions.map((tr) {
+    //           return TransactionItem(
+    //             key: ValueKey(tr.id),
+    //             tr: tr,
+    //             onRemove: onRemove,
+    //           );
+    //         }).toList(),
+    //       );
   }
 }

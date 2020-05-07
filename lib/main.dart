@@ -36,9 +36,24 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final List<Transaction> _transaction = [];
   bool _showChart = false;
+  //Metdos do ciclo de vida de aplicação
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this); //Registrar um observer
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {}
+
+  @override
+  void dispose(){
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);//Removendo 
+  }
 
   List<Transaction> get _recentTransactions {
     return _transaction.where((tr) {
@@ -140,7 +155,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final iconList = Platform.isIOS ? CupertinoIcons.refresh : Icons.list;
     final chartList = Platform.isIOS ? CupertinoIcons.refresh : Icons.pie_chart;
-
 
     final actions = <Widget>[
       if (isLanscape)
